@@ -1,0 +1,4009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roblox Clicker PRO — Casino</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --accent: #4facfe;
+    --accent2: #00f2fe;
+    --gold: #ffd700;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --green: #22c55e;
+    --red: #ef4444;
+    --panel-bg: rgba(20, 15, 40, 0.65);
+    --border: rgba(255, 255, 255, 0.08);
+    --roblox: #3b82f6;
+    --roblox-dark: #1d4ed8;
+    --rarity-common: #9ca3af;
+    --rarity-uncommon: #22c55e;
+    --rarity-rare: #3b82f6;
+    --rarity-epic: #a855f7;
+    --rarity-legendary: #f59e0b;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: radial-gradient(ellipse at top, #1e1b4b 0%, #0f0a1f 50%, #05030d 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: none;
+    transition: background 3s ease;
+  }
+
+  body.night {
+    background: radial-gradient(ellipse at top, #05030d 0%, #0a0616 50%, #000 100%);
+  }
+
+  .cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px #fff, 0 0 30px rgba(79, 172, 254, 0.8);
+  }
+
+  .bg-orbs {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.45;
+    animation: float 22s ease-in-out infinite;
+  }
+
+  .orb1 { width: 420px; height: 420px; background: #4facfe; top: -120px; left: -120px; }
+  .orb2 { width: 380px; height: 380px; background: #a855f7; bottom: -120px; right: -120px; animation-delay: -6s; }
+  .orb3 { width: 320px; height: 320px; background: #ec4899; top: 45%; left: 65%; animation-delay: -11s; }
+  .orb4 { width: 280px; height: 280px; background: #22c55e; bottom: 15%; left: 8%; animation-delay: -16s; }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(60px, -40px) scale(1.08); }
+    66% { transform: translate(-40px, 60px) scale(0.92); }
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 1; }
+  }
+
+  .spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px #fff, 0 0 16px rgba(255, 255, 255, 0.9), 0 0 24px rgba(79, 172, 254, 0.7);
+    animation: sparkFade 0.9s ease-out forwards;
+  }
+
+  @keyframes sparkFade {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.2) translate(
+        calc(var(--dx) * 1px),
+        calc(var(--dy) * 1px)
+      );
+    }
+  }
+
+  .golden-logo {
+    position: fixed;
+    width: 70px;
+    height: 70px;
+    z-index: 500;
+    cursor: none;
+    animation: goldenPop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), goldenFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px gold) drop-shadow(0 0 60px rgba(255, 215, 0, 0.6));
+  }
+
+  .golden-logo svg {
+    width: 100%;
+    height: 100%;
+    animation: goldenSpin 4s linear infinite;
+  }
+
+  @keyframes goldenPop {
+    0% { transform: scale(0) rotate(-180deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  @keyframes goldenFloat {
+    0%, 100% { transform: translateY(0) rotate(-14deg); }
+    50% { transform: translateY(-15px) rotate(-14deg); }
+  }
+
+  @keyframes goldenSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .golden-logo::after {
+    content: '🎁';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-size: 24px;
+    animation: goldenHeart 1s infinite;
+  }
+
+  @keyframes goldenHeart {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+
+  .bonus-tab {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .bonus-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(20, 15, 40, 0.75);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 20px;
+    cursor: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .bonus-btn:hover {
+    background: rgba(79, 172, 254, 0.3);
+    border-color: var(--accent);
+    transform: scale(1.08);
+  }
+
+  .bonus-btn .badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.6);
+    animation: badgePulse 1.5s infinite;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 300px 1fr 320px;
+    gap: 18px;
+    width: 100%;
+    max-width: 1180px;
+    height: calc(100vh - 40px);
+    max-height: 780px;
+    padding: 0;
+    margin: 0 20px;
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .panel::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8bb8e8;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8bb8e8;
+    margin: 22px 0 12px;
+    font-weight: 700;
+  }
+
+  .stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stat {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 11px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.25s;
+    min-height: 42px;
+  }
+
+  .stat:hover {
+    border-color: rgba(79, 172, 254, 0.35);
+    background: rgba(79, 172, 254, 0.07);
+    transform: translateX(2px);
+  }
+
+  .stat .label {
+    font-size: 12px;
+    color: #a8a8c8;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat .value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 10px currentColor;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .value.blue { color: var(--accent); }
+  .value.gold { color: var(--gold); }
+  .value.green { color: var(--green); }
+  .value.purple { color: var(--purple); }
+  .value.pink { color: var(--pink); }
+  .value.red { color: var(--red); }
+
+  .center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 20px 0;
+  }
+
+  .logo {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #4facfe 0%, #a855f7 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.5));
+    animation: pulse 3s ease-in-out infinite;
+    line-height: 1.2;
+  }
+
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.5)); }
+    50% { filter: drop-shadow(0 0 35px rgba(168, 85, 247, 0.8)); }
+  }
+
+  .combo {
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px gold);
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+    height: 28px;
+    letter-spacing: 1px;
+  }
+
+  .combo.show {
+    opacity: 1;
+    animation: comboShake 0.3s;
+  }
+
+  @keyframes comboShake {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .frenzy-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #1a1a2e;
+    padding: 12px 30px;
+    border-radius: 14px;
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: 2px;
+    z-index: 2000;
+    box-shadow: 0 10px 40px rgba(255, 215, 0, 0.7);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: frenzyPulse 0.6s infinite;
+  }
+
+  .frenzy-banner.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes frenzyPulse {
+    0%, 100% { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.7); }
+    50% { box-shadow: 0 10px 60px rgba(255, 215, 0, 1); }
+  }
+
+  .robux-display {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(79, 172, 254, 0.3);
+    border-radius: 18px;
+    padding: 16px 40px;
+    box-shadow: 0 0 40px rgba(79, 172, 254, 0.2),
+                inset 0 0 40px rgba(79, 172, 254, 0.08);
+    min-width: 300px;
+    position: relative;
+  }
+
+  .robux-display.frenzy {
+    border-color: var(--gold);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.5),
+                inset 0 0 60px rgba(255, 215, 0, 0.15);
+    animation: frenzyGlow 0.8s infinite;
+  }
+
+  @keyframes frenzyGlow {
+    0%, 100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.5), inset 0 0 60px rgba(255, 215, 0, 0.15); }
+    50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), inset 0 0 80px rgba(255, 215, 0, 0.25); }
+  }
+
+  .robux-label {
+    font-size: 11px;
+    color: #8bb8e8;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .robux-value {
+    font-size: 46px;
+    font-weight: 900;
+    background: linear-gradient(180deg, #fff, #4facfe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    transition: transform 0.1s;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .robux-value.bump { transform: scale(1.08); }
+
+  .per-second {
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .clicker-wrap {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .clicker-glow {
+    position: absolute;
+    inset: -30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.55), transparent 70%);
+    animation: glow 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .clicker-wrap.frenzy .clicker-glow {
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.8), transparent 70%);
+    animation: glow 0.6s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.12); opacity: 1; }
+  }
+
+  .clicker {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 32px;
+    border: none;
+    cursor: none;
+    background: linear-gradient(145deg, var(--roblox), var(--roblox-dark));
+    box-shadow:
+      0 15px 40px rgba(59, 130, 246, 0.6),
+      0 0 0 4px rgba(255, 255, 255, 0.1),
+      inset 0 -10px 30px rgba(0, 0, 0, 0.3),
+      inset 0 10px 30px rgba(255, 255, 255, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    transition: transform 0.08s ease;
+    overflow: hidden;
+    z-index: 2;
+    padding: 0;
+  }
+
+  .clicker-wrap.frenzy .clicker {
+    background: linear-gradient(145deg, #ffd700, #ff8c00);
+    box-shadow:
+      0 15px 60px rgba(255, 215, 0, 0.9),
+      0 0 0 4px rgba(255, 255, 255, 0.3),
+      inset 0 -10px 30px rgba(0, 0, 0, 0.3),
+      inset 0 10px 30px rgba(255, 255, 255, 0.5);
+  }
+
+  .clicker::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 26px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.15), transparent 60%);
+    pointer-events: none;
+  }
+
+  .clicker::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.28), transparent 30%);
+    animation: rotate 4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes rotate { to { transform: rotate(360deg); } }
+
+  .clicker:hover {
+    box-shadow:
+      0 15px 55px rgba(59, 130, 246, 0.9),
+      0 0 0 4px rgba(255, 255, 255, 0.2),
+      inset 0 -10px 30px rgba(0, 0, 0, 0.3),
+      inset 0 10px 30px rgba(255, 255, 255, 0.4);
+  }
+
+  .clicker:active { transform: scale(0.94); }
+
+  .clicker-logo {
+    width: 120px;
+    height: 120px;
+    z-index: 3;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+    transform: rotate(-14deg);
+    animation: logoWobble 3s ease-in-out infinite;
+  }
+
+  @keyframes logoWobble {
+    0%, 100% { transform: rotate(-14deg) scale(1); }
+    50% { transform: rotate(-12deg) scale(1.03); }
+  }
+
+  .shop-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-bottom: 16px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  .tab {
+    padding: 9px 4px;
+    border: none;
+    background: transparent;
+    color: #8bb8e8;
+    border-radius: 8px;
+    cursor: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+  }
+
+  .tab:hover:not(.active) {
+    background: rgba(79, 172, 254, 0.1);
+    color: #fff;
+  }
+
+  .shop-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .item {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 11px 12px;
+    cursor: none;
+    transition: all 0.22s;
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    min-height: 62px;
+  }
+
+  .item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .item:hover:not(.disabled) {
+    background: rgba(79, 172, 254, 0.1);
+    border-color: rgba(79, 172, 254, 0.4);
+    transform: translateX(3px);
+  }
+
+  .item:hover:not(.disabled)::before { opacity: 1; }
+
+  .item.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .item-icon {
+    font-size: 24px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(79, 172, 254, 0.12);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .item-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .item-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-desc {
+    font-size: 10.5px;
+    color: #8bb8e8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .item-price.owned {
+    color: var(--green);
+    text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    font-size: 15px;
+  }
+
+  .count-badge {
+    display: inline-block;
+    color: var(--green);
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  .achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .achievement {
+    background: rgba(0,0,0,0.28);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+  }
+
+  .achievement.locked {
+    opacity: 0.4;
+    filter: grayscale(0.8);
+  }
+
+  .achievement.unlocked {
+    border-color: rgba(255, 215, 0, 0.4);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.02));
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.12);
+  }
+
+  .ach-icon {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+
+  .ach-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .ach-name {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ach-desc {
+    font-size: 10.5px;
+    color: #8bb8e8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ach-check {
+    color: var(--gold);
+    font-size: 16px;
+    font-weight: 900;
+    text-shadow: 0 0 10px var(--gold);
+  }
+
+  .controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(20, 15, 40, 0.75);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 18px;
+    cursor: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+  }
+
+  .icon-btn:hover {
+    background: rgba(79, 172, 254, 0.3);
+    border-color: var(--accent);
+    transform: scale(1.08);
+  }
+
+  .floating {
+    position: fixed;
+    color: #fff;
+    font-weight: 900;
+    font-size: 22px;
+    pointer-events: none;
+    text-shadow: 0 0 12px #00f2fe, 0 0 20px #00f2fe;
+    animation: floatUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    z-index: 1000;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .floating.gold {
+    color: var(--gold);
+    text-shadow: 0 0 12px var(--gold), 0 0 20px var(--gold);
+    font-size: 32px;
+  }
+
+  .floating.frenzy {
+    color: #ff8c00;
+    text-shadow: 0 0 15px #ffd700, 0 0 30px #ff8c00;
+    font-size: 36px;
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    30% { transform: translate(-50%, -90%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -180%) scale(1); }
+  }
+
+  .notif {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.95), rgba(236, 72, 153, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 12px 22px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 20px 50px rgba(168, 85, 247, 0.5);
+    z-index: 2000;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+
+  .notif.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .notif .emoji { font-size: 20px; }
+
+  .prestige-box {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 100, 0, 0.06));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .prestige-title {
+    font-size: 12px;
+    color: #ffd700;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .prestige-desc {
+    font-size: 11px;
+    color: #a8a8c8;
+    margin-top: 4px;
+  }
+
+  .prestige-btn {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #1a1a2e;
+    font-weight: 900;
+    font-size: 12px;
+    cursor: none;
+    transition: all 0.2s;
+    letter-spacing: 1.5px;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    margin-top: 12px;
+  }
+
+  .prestige-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255, 215, 0, 0.6);
+  }
+
+  /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .modal-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: linear-gradient(145deg, rgba(30, 25, 55, 0.98), rgba(15, 10, 30, 0.98));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 28px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px rgba(79, 172, 254, 0.2);
+    transform: scale(0.7);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-height: 95vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    margin: auto;
+  }
+
+  .modal::-webkit-scrollbar { display: none; }
+
+  .modal-overlay.show .modal {
+    transform: scale(1);
+  }
+
+  .modal h2 {
+    font-size: 22px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .modal p {
+    font-size: 13px;
+    color: #a8a8c8;
+    margin-bottom: 20px;
+  }
+
+  .modal-icon {
+    font-size: 72px;
+    margin-bottom: 12px;
+    animation: modalBounce 1s ease-in-out infinite;
+    display: block;
+  }
+
+  @keyframes modalBounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+
+  .modal-reward {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+    margin: 15px 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    color: #fff;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.5);
+    margin-top: 10px;
+  }
+
+  .modal-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(79, 172, 254, 0.8);
+  }
+
+  .modal-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .modal-btn.secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .modal-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+  }
+
+  /* ===== КАЗИНО ===== */
+  .casino-modal {
+    max-width: 720px;
+    padding: 24px;
+  }
+
+  .casino-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 14px;
+    padding: 5px;
+  }
+
+  .casino-tab {
+    padding: 10px 6px;
+    border: none;
+    background: transparent;
+    color: #8bb8e8;
+    border-radius: 10px;
+    cursor: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .casino-tab.active {
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+  }
+
+  .casino-tab:hover:not(.active) {
+    background: rgba(79, 172, 254, 0.1);
+    color: #fff;
+  }
+
+  .casino-content {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  /* ===== СТАВКИ ===== */
+  .bet-panel {
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .bet-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .bet-label {
+    font-size: 12px;
+    color: #8bb8e8;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .bet-value {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 15px var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bet-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .bet-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+  }
+
+  .bet-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .bet-btn {
+    padding: 8px 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    border-radius: 8px;
+    cursor: none;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+
+  .bet-btn:hover {
+    background: rgba(79, 172, 254, 0.2);
+    border-color: var(--accent);
+  }
+
+  /* ===== СЛОТЫ ===== */
+  .slots-machine {
+    background: linear-gradient(145deg, #1a1a2e, #0f0a1f);
+    border: 3px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), inset 0 0 30px rgba(0,0,0,0.5);
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+  }
+
+  .slots-title {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffd700;
+    text-shadow: 0 0 15px #ffd700;
+    margin-bottom: 12px;
+  }
+
+  .slots-reels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    background: rgba(0,0,0,0.6);
+    padding: 12px;
+    border-radius: 14px;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+  }
+
+  .reel {
+    height: 120px;
+    background: linear-gradient(180deg, #fff, #e8e8e8);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  .reel::before,
+  .reel::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .reel::before {
+    top: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.4), transparent);
+  }
+
+  .reel::after {
+    bottom: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.4), transparent);
+  }
+
+  .reel.spinning {
+    animation: reelShake 0.1s infinite;
+  }
+
+  @keyframes reelShake {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .reel-symbol {
+    transition: transform 0.1s;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+
+  .reel.win {
+    animation: reelWin 0.5s infinite;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 0 30px #ffd700, 0 0 60px #ffd700;
+  }
+
+  @keyframes reelWin {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .slots-paytable {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .payline {
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .payline .symbols {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  .payline .payout {
+    color: var(--gold);
+    font-weight: 900;
+    text-shadow: 0 0 8px var(--gold);
+  }
+
+  .slots-result {
+    margin-top: 14px;
+    font-size: 16px;
+    font-weight: 900;
+    min-height: 24px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .slots-result.win {
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+    animation: resultPop 0.5s;
+  }
+
+  .slots-result.lose {
+    color: var(--red);
+    text-shadow: 0 0 15px var(--red);
+  }
+
+  @keyframes resultPop {
+    0% { transform: scale(0.5); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  .spin-btn {
+    width: 100%;
+    padding: 16px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #1a1a2e;
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: 3px;
+    cursor: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+  }
+
+  .spin-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.8);
+  }
+
+  .spin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ===== РУЛЕТКА ===== */
+  .roulette-stage {
+    position: relative;
+    width: 340px;
+    height: 340px;
+    margin: 10px auto;
+    flex-shrink: 0;
+  }
+
+  .roulette-pointer {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 22px solid #ffd700;
+    z-index: 20;
+    filter: drop-shadow(0 0 10px #ffd700) drop-shadow(0 0 20px #ff8c00);
+  }
+
+  .roulette-pointer::after {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #fff8b0, #ffd700);
+    border-radius: 50%;
+    box-shadow: 0 0 12px #ffd700, 0 0 20px #ff8c00;
+  }
+
+  .roulette-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #6b4f00, #ffd700, #6b4f00, #ffd700, #6b4f00);
+    box-shadow:
+      0 0 50px rgba(255, 215, 0, 0.35),
+      0 20px 60px rgba(0, 0, 0, 0.75),
+      inset 0 0 30px rgba(0, 0, 0, 0.6);
+    padding: 14px;
+  }
+
+  .roulette-wheel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    transform: rotate(0deg);
+    will-change: transform;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+  }
+
+  .roulette-label {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,1);
+    pointer-events: none;
+    z-index: 3;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .roulette-hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #4a4a4a, #1a1a1a);
+    border: 4px solid #ffd700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    box-shadow:
+      0 0 30px rgba(255, 215, 0, 0.6),
+      inset 0 0 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .roulette-hub-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #666, #222);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+  }
+
+  .roulette-hub-inner::before {
+    content: '✦';
+    color: #ffd700;
+    text-shadow: 0 0 10px #ffd700;
+  }
+
+  .roulette-bet-row {
+    display: flex;
+    gap: 6px;
+    margin: 14px 0 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .roulette-bet {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    cursor: none;
+    font-weight: 700;
+    font-size: 11px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .roulette-bet.red { border-color: #ef4444; }
+  .roulette-bet.black { border-color: #555; }
+  .roulette-bet.green { border-color: #22c55e; }
+  .roulette-bet.even { border-color: #4facfe; }
+  .roulette-bet.odd { border-color: #a855f7; }
+
+  .roulette-bet.active {
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
+    transform: scale(1.05);
+  }
+
+  .roulette-bet:hover:not(.active) {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .roulette-result {
+    font-size: 16px;
+    font-weight: 900;
+    text-align: center;
+    min-height: 28px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .roulette-result.win {
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+  }
+
+  .roulette-result.lose {
+    color: var(--red);
+    text-shadow: 0 0 15px var(--red);
+  }
+
+  /* ===== МОНЕТКА ===== */
+  .coin-scene {
+    perspective: 1000px;
+    width: 180px;
+    height: 180px;
+    margin: 20px auto;
+    position: relative;
+  }
+
+  .coin {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: none;
+  }
+
+  .coin-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 72px;
+    backface-visibility: hidden;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(0,0,0,0.3);
+    border: 6px solid #ffd700;
+  }
+
+  .coin-face.heads {
+    background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+  }
+
+  .coin-face.tails {
+    background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+    transform: rotateY(180deg);
+  }
+
+  .coin-result {
+    font-size: 16px;
+    font-weight: 900;
+    text-align: center;
+    min-height: 28px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .coin-result.win {
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+  }
+
+  .coin-result.lose {
+    color: var(--red);
+    text-shadow: 0 0 15px var(--red);
+  }
+
+  /* ===== КОСТИ ===== */
+  .dice-scene {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  .die {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, #fff, #ddd);
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5), inset 0 -4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .die.rolling {
+    animation: dieRoll 0.4s infinite;
+  }
+
+  @keyframes dieRoll {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.05); }
+    50% { transform: rotate(180deg) scale(1); }
+    75% { transform: rotate(270deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .die-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 14px;
+    gap: 4px;
+  }
+
+  .pip {
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .pip.active {
+    background: radial-gradient(circle at 30% 30%, #333, #000);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .dice-bet-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .dice-bet {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    cursor: none;
+    font-weight: 700;
+    font-size: 11px;
+    transition: all 0.2s;
+    min-width: 46px;
+    line-height: 1.2;
+  }
+
+  .dice-bet.active {
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
+  }
+
+  .dice-bet:hover:not(.active) {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .dice-result {
+    font-size: 16px;
+    font-weight: 900;
+    text-align: center;
+    min-height: 28px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .dice-result.win {
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+  }
+
+  .dice-result.lose {
+    color: var(--red);
+    text-shadow: 0 0 15px var(--red);
+  }
+
+  /* ===== СТАТИСТИКА КАЗИНО ===== */
+  .casino-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .casino-stat {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .casino-stat .label {
+    font-size: 10px;
+    color: #8bb8e8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .casino-stat .val {
+    font-size: 15px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .casino-stat .val.win { color: var(--green); text-shadow: 0 0 10px var(--green); }
+  .casino-stat .val.lose { color: var(--red); text-shadow: 0 0 10px var(--red); }
+  .casino-stat .val.gold { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+
+  /* ================================================== */
+  /* ============ КЕЙСЫ ============ */
+  /* ================================================== */
+  .cases-modal {
+    max-width: 900px;
+    padding: 24px;
+  }
+
+  .cases-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .case-card {
+    background: linear-gradient(145deg, rgba(0,0,0,0.4), rgba(20,15,40,0.6));
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: none;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .case-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--case-color, #4facfe);
+    box-shadow: 0 0 20px var(--case-color, #4facfe);
+    opacity: 0.7;
+  }
+
+  .case-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--case-color, #4facfe);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6),
+                0 0 40px color-mix(in srgb, var(--case-color, #4facfe) 40%, transparent);
+  }
+
+  .case-card.active {
+    border-color: var(--case-color, #4facfe);
+    background: linear-gradient(145deg, rgba(79,172,254,0.15), rgba(168,85,247,0.1));
+    box-shadow: 0 0 30px color-mix(in srgb, var(--case-color, #4facfe) 50%, transparent);
+  }
+
+  .case-emoji {
+    font-size: 44px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 10px var(--case-color, #4facfe));
+  }
+
+  .case-name {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--case-color, #4facfe);
+    text-shadow: 0 0 10px currentColor;
+    margin-bottom: 4px;
+  }
+
+  .case-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: 0 0 8px var(--gold);
+  }
+
+  /* Окно прокрутки */
+  .case-open-area {
+    background: linear-gradient(145deg, rgba(0,0,0,0.5), rgba(20,15,40,0.6));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .case-opening-title {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    color: #8bb8e8;
+    text-transform: uppercase;
+  }
+
+  .case-roulette {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.08);
+  }
+
+  .case-roulette::before,
+  .case-roulette::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .case-roulette::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(15,10,30,0.95), transparent);
+  }
+
+  .case-roulette::after {
+    right: 0;
+    background: linear-gradient(270deg, rgba(15,10,30,0.95), transparent);
+  }
+
+  .case-pointer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    background: linear-gradient(180deg, #ffd700, #ff8c00, #ffd700);
+    box-shadow: 0 0 15px #ffd700, 0 0 30px #ff8c00;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .case-pointer::before {
+    content: '▼';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffd700;
+    font-size: 16px;
+    filter: drop-shadow(0 0 10px #ffd700);
+  }
+
+  .case-pointer::after {
+    content: '▲';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffd700;
+    font-size: 16px;
+    filter: drop-shadow(0 0 10px #ffd700);
+  }
+
+  .case-strip {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    padding: 0 8px;
+    will-change: transform;
+  }
+
+  .case-slot {
+    width: 110px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(0,0,0,0.5), rgba(20,15,40,0.7));
+    border: 2px solid var(--slot-color, #9ca3af);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px color-mix(in srgb, var(--slot-color, #9ca3af) 20%, transparent);
+  }
+
+  .case-slot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--slot-color, #9ca3af) 40%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .case-slot-emoji {
+    font-size: 36px;
+    filter: drop-shadow(0 0 8px var(--slot-color, #9ca3af));
+    z-index: 1;
+  }
+
+  .case-slot-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    padding: 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    z-index: 1;
+    opacity: 0.85;
+  }
+
+  .case-slot-rarity {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--slot-color, #9ca3af);
+    color: #000;
+    padding: 2px 5px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  .case-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .case-open-btn {
+    padding: 14px 40px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #4facfe, #a855f7);
+    color: #fff;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 30px rgba(79, 172, 254, 0.5);
+  }
+
+  .case-open-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(79, 172, 254, 0.8);
+  }
+
+  .case-open-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Результат */
+  .case-result {
+    text-align: center;
+    margin-top: 16px;
+    min-height: 40px;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+
+  .case-result .prize-name {
+    display: block;
+    font-size: 22px;
+    margin-top: 6px;
+    text-shadow: 0 0 20px currentColor;
+  }
+
+  /* Инвентарь */
+  .case-inventory {
+    background: linear-gradient(145deg, rgba(0,0,0,0.5), rgba(20,15,40,0.6));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .inventory-title {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #8bb8e8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .inventory-count {
+    font-size: 11px;
+    color: var(--gold);
+    text-shadow: 0 0 10px var(--gold);
+  }
+
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .inventory-grid::-webkit-scrollbar {
+    width: 6px;
+  }
+  .inventory-grid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .inventory-grid::-webkit-scrollbar-thumb {
+    background: rgba(79, 172, 254, 0.3);
+    border-radius: 10px;
+  }
+
+  .inv-item {
+    background: linear-gradient(145deg, rgba(0,0,0,0.5), rgba(20,15,40,0.7));
+    border: 2px solid var(--inv-color, #9ca3af);
+    border-radius: 10px;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inv-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--inv-color, #9ca3af) 40%, transparent);
+  }
+
+  .inv-item-emoji {
+    font-size: 26px;
+    filter: drop-shadow(0 0 6px var(--inv-color, #9ca3af));
+    display: block;
+  }
+
+  .inv-item-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .inv-item-price {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--gold);
+    margin-top: 2px;
+    text-shadow: 0 0 6px var(--gold);
+  }
+
+  .inv-item-sell {
+    font-size: 8px;
+    color: #8bb8e8;
+    margin-top: 2px;
+    opacity: 0.6;
+  }
+
+  .inventory-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: #8bb8e8;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 1000px) {
+    html, body { overflow: auto; height: auto; }
+    body { align-items: flex-start; padding: 20px 0; cursor: auto; }
+    .container {
+      grid-template-columns: 1fr;
+      height: auto;
+      max-height: none;
+      padding: 60px 14px 20px;
+      margin: 0;
+      gap: 14px;
+    }
+    .panel { max-height: none; }
+    .center { order: -1; padding: 10px 0; }
+    .logo { font-size: 24px; letter-spacing: 2px; }
+    .robux-display { padding: 14px 30px; min-width: 260px; }
+    .robux-value { font-size: 38px; }
+    .clicker-wrap { width: 180px; height: 180px; }
+    .clicker { width: 160px; height: 160px; border-radius: 26px; cursor: pointer; }
+    .clicker-logo { width: 95px; height: 95px; }
+    .cursor-dot { display: none; }
+    .tab, .item, .icon-btn, .prestige-btn, .modal-btn, .bonus-btn,
+    .spin-btn, .bet-btn, .casino-tab, .roulette-bet, .dice-bet, .coin,
+    .case-card, .case-open-btn, .inv-item { cursor: pointer; }
+    .casino-tabs { grid-template-columns: repeat(2, 1fr); }
+    .casino-stats { grid-template-columns: repeat(2, 1fr); }
+    .roulette-stage { width: 280px; height: 280px; }
+    .cases-list { grid-template-columns: repeat(2, 1fr); }
+    .case-slot { width: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="orb orb4"></div>
+</div>
+<div class="stars" id="stars"></div>
+
+<div class="bonus-tab">
+  <button class="bonus-btn" id="dailyBtn" title="Ежедневный бонус">🎁<span class="badge" id="dailyBadge">!</span></button>
+  <button class="bonus-btn" id="casinoBtn" title="Казино">🎰</button>
+  <button class="bonus-btn" id="casesBtn" title="Кейсы">📦</button>
+</div>
+
+<div class="controls">
+  <button class="icon-btn" id="soundBtn" title="Звук">🔊</button>
+</div>
+
+<div class="container">
+
+  <div class="panel">
+    <div class="panel-title">📊 Статистика</div>
+
+    <div class="stats-list">
+      <div class="stat">
+        <span class="label">💎 Robux</span>
+        <span class="value blue" id="statRobux">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">👆 За клик</span>
+        <span class="value gold" id="statPerClick">1</span>
+      </div>
+      <div class="stat">
+        <span class="label">⚡ В секунду</span>
+        <span class="value green" id="statPerSec">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">🖱️ Кликов</span>
+        <span class="value purple" id="statClicks">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">🔥 Макс. комбо</span>
+        <span class="value pink" id="statMaxCombo">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">🎰 Казино</span>
+        <span class="value gold" id="statCasino">+0</span>
+      </div>
+      <div class="stat">
+        <span class="label">📦 Кейсов</span>
+        <span class="value blue" id="statCases">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">🏆 Престиж</span>
+        <span class="value pink" id="statPrestige">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">⭐ Множитель</span>
+        <span class="value gold" id="statMult">x1.0</span>
+      </div>
+    </div>
+
+    <div class="section-title">🏅 Достижения</div>
+    <div class="achievements-list" id="achievementsList"></div>
+
+    <div class="prestige-box" id="prestigeBox" style="display:none;">
+      <div class="prestige-title">✨ ДОСТУПЕН ПРЕСТИЖ</div>
+      <div class="prestige-desc" id="prestigeReward">+1 к множителю, сброс прогресса</div>
+      <button class="prestige-btn" id="prestigeBtn">🔥 ПРЕСТИЖНУТЬ</button>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="logo">ROBLOX CLICKER</div>
+
+    <div class="combo" id="comboDisplay"></div>
+
+    <div class="robux-display" id="robuxDisplay">
+      <div class="robux-label">Robux</div>
+      <div class="robux-value" id="robuxValue">0</div>
+      <div class="per-second" id="perSecond">+0 / сек</div>
+    </div>
+
+    <div class="clicker-wrap" id="clickerWrap">
+      <div class="clicker-glow"></div>
+      <button class="clicker" id="clicker">
+        <svg class="clicker-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect x="30" y="30" width="140" height="140" rx="14" ry="14"
+                fill="#ffffff" transform="rotate(-14 100 100)"/>
+          <rect x="75" y="75" width="50" height="50" rx="6" ry="6"
+                fill="#3b82f6" transform="rotate(-14 100 100)"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🛒 Магазин</div>
+
+    <div class="shop-tabs">
+      <button class="tab active" data-tab="click">👆 Клик</button>
+      <button class="tab" data-tab="auto">🤖 Авто</button>
+      <button class="tab" data-tab="boost">🚀 Буст</button>
+    </div>
+
+    <div class="shop-content" id="shopContent"></div>
+  </div>
+
+</div>
+
+<div class="frenzy-banner" id="frenzyBanner">
+  <span>🔥</span>
+  <span id="frenzyText">ЗОЛОТАЯ ЛИХОРАДКА! x7</span>
+  <span id="frenzyTimer">10с</span>
+</div>
+
+<div class="modal-overlay" id="dailyModal">
+  <div class="modal">
+    <span class="modal-icon">🎁</span>
+    <h2>ЕЖЕДНЕВНЫЙ БОНУС</h2>
+    <p>Заходи каждый день и получай растущую награду!</p>
+    <div class="modal-reward" id="dailyReward">+1 000 R$</div>
+    <p style="font-size:12px; margin-top:-10px;">Серия: <span id="dailyStreak" style="color:#ffd700; font-weight:700;">0</span> дней подряд</p>
+    <button class="modal-btn" id="dailyClaim">ЗАБРАТЬ НАГРАДУ</button>
+  </div>
+</div>
+
+<!-- КАЗИНО -->
+<div class="modal-overlay" id="casinoModal">
+  <div class="modal casino-modal">
+    <h2>🎰 КАЗИНО ROBLOX</h2>
+    <p>Испытай удачу! Ставки принимаются в Robux</p>
+
+    <div class="bet-panel">
+      <div class="bet-row">
+        <span class="bet-label">💰 Текущая ставка</span>
+        <span class="bet-value" id="betDisplay">100</span>
+      </div>
+
+      <input type="number" class="bet-input" id="betInput" value="100" min="1" step="1">
+
+      <div class="bet-buttons">
+        <button class="bet-btn" data-bet="10">10</button>
+        <button class="bet-btn" data-bet="100">100</button>
+        <button class="bet-btn" data-bet="1000">1K</button>
+        <button class="bet-btn" data-bet="10000">10K</button>
+        <button class="bet-btn" data-bet="max">MAX</button>
+      </div>
+
+      <div class="bet-buttons" style="grid-template-columns: repeat(3, 1fr);">
+        <button class="bet-btn" data-bet="half">½ ставки</button>
+        <button class="bet-btn" data-bet="double">x2 ставки</button>
+        <button class="bet-btn" data-bet="min">MIN (10)</button>
+      </div>
+    </div>
+
+    <div class="casino-tabs">
+      <button class="casino-tab active" data-game="slots">🎰 Слоты</button>
+      <button class="casino-tab" data-game="roulette">🎡 Рулетка</button>
+      <button class="casino-tab" data-game="coin">🪙 Монетка</button>
+      <button class="casino-tab" data-game="dice">🎲 Кости</button>
+    </div>
+
+    <div class="casino-content" id="casinoContent"></div>
+
+    <div class="casino-stats">
+      <div class="casino-stat">
+        <div class="label">Всего выиграно</div>
+        <div class="val win" id="casinoWon">0</div>
+      </div>
+      <div class="casino-stat">
+        <div class="label">Всего проиграно</div>
+        <div class="val lose" id="casinoLost">0</div>
+      </div>
+      <div class="casino-stat">
+        <div class="label">Лучший выигрыш</div>
+        <div class="val gold" id="casinoBest">0</div>
+      </div>
+    </div>
+
+    <button class="modal-btn secondary" id="casinoClose" style="margin-top:16px;">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<!-- КЕЙСЫ -->
+<div class="modal-overlay" id="casesModal">
+  <div class="modal cases-modal">
+    <h2>📦 КЕЙСЫ</h2>
+    <p>Открывай кейсы и получай редкие предметы!</p>
+
+    <div class="cases-list" id="casesList"></div>
+
+    <div class="case-open-area">
+      <div class="case-opening-title" id="caseOpeningTitle">Выбери кейс</div>
+      <div class="case-roulette">
+        <div class="case-pointer"></div>
+        <div class="case-strip" id="caseStrip"></div>
+      </div>
+      <div class="case-result" id="caseResult"></div>
+    </div>
+
+    <div class="case-controls">
+      <button class="case-open-btn" id="caseOpenBtn" disabled>🎁 ОТКРЫТЬ</button>
+    </div>
+
+    <div class="case-inventory" style="margin-top: 20px;">
+      <div class="inventory-title">
+        <span>🎒 Инвентарь</span>
+        <span class="inventory-count" id="inventoryCount">0 предметов</span>
+      </div>
+      <div class="inventory-grid" id="inventoryGrid"></div>
+    </div>
+
+    <button class="modal-btn secondary" id="casesClose" style="margin-top:16px;">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<script>
+// ==================================================
+// ============ СОСТОЯНИЕ ============
+// ==================================================
+const state = {
+  robux: 0,
+  totalRobux: 0,
+  perClick: 1,
+  perSec: 0,
+  totalClicks: 0,
+  maxCombo: 0,
+  prestige: 0,
+  multiplier: 1,
+  clickUpgrades: {},
+  autoUpgrades: {},
+  boosts: {},
+  achievements: {},
+  sound: true,
+  dailyStreak: 0,
+  lastDailyDate: null,
+  casinoWon: 0,
+  casinoLost: 0,
+  casinoBest: 0,
+  casinoBet: 100,
+  frenzyUntil: 0,
+  caughtFrenzy: false,
+  goldenCaught: 0,
+  combo: 0,
+  comboTimer: 0,
+  // Кейсы
+  totalCasesOpened: 0,
+  inventory: [],
+  inventoryIdCounter: 1,
+};
+
+// ==================================================
+// ============ ДАННЫЕ ============
+// ==================================================
+const CLICK_UPGRADES = [
+  { id: 'c1', name: 'Слабый палец', desc: '+1 за клик', icon: '👆', base: 15, mult: 1.15, effect: 1 },
+  { id: 'c2', name: 'Крепкий палец', desc: '+3 за клик', icon: '✌️', base: 100, mult: 1.16, effect: 3 },
+  { id: 'c3', name: 'Стальные руки', desc: '+10 за клик', icon: '💪', base: 800, mult: 1.17, effect: 10 },
+  { id: 'c4', name: 'Робо-рука', desc: '+50 за клик', icon: '🦾', base: 6000, mult: 1.18, effect: 50 },
+  { id: 'c5', name: 'Кибер-перчатка', desc: '+250 за клик', icon: '🧤', base: 45000, mult: 1.19, effect: 250 },
+  { id: 'c6', name: 'Квантовый клик', desc: '+1500 за клик', icon: '⚛️', base: 350000, mult: 1.20, effect: 1500 },
+  { id: 'c7', name: 'Божественный тап', desc: '+10000 за клик', icon: '🌟', base: 2500000, mult: 1.22, effect: 10000 },
+];
+
+const AUTO_UPGRADES = [
+  { id: 'a1', name: 'Робот-кликер', desc: '+1/сек', icon: '🤖', base: 50, mult: 1.15, effect: 1 },
+  { id: 'a2', name: 'Ферма ботов', desc: '+5/сек', icon: '🏭', base: 400, mult: 1.16, effect: 5 },
+  { id: 'a3', name: 'Кликер-завод', desc: '+25/сек', icon: '⚙️', base: 3500, mult: 1.17, effect: 25 },
+  { id: 'a4', name: 'Квантовый сервер', desc: '+120/сек', icon: '🖥️', base: 28000, mult: 1.18, effect: 120 },
+  { id: 'a5', name: 'Нейросеть', desc: '+600/сек', icon: '🧠', base: 220000, mult: 1.19, effect: 600 },
+  { id: 'a6', name: 'Dyson-сфера', desc: '+3000/сек', icon: '☀️', base: 1800000, mult: 1.20, effect: 3000 },
+  { id: 'a7', name: 'Галактическая сеть', desc: '+15000/сек', icon: '🌌', base: 15000000, mult: 1.22, effect: 15000 },
+];
+
+const BOOSTS = [
+  { id: 'b1', name: 'Двойной клик', desc: 'x2 к клику на 30 сек', icon: '⚡', cost: 500, duration: 30, type: 'clickMult', value: 2 },
+  { id: 'b2', name: 'Турбо-режим', desc: 'x3 к клику на 20 сек', icon: '🔥', cost: 5000, duration: 20, type: 'clickMult', value: 3 },
+  { id: 'b3', name: 'Золотой час', desc: 'x2 к авто на 60 сек', icon: '💰', cost: 25000, duration: 60, type: 'autoMult', value: 2 },
+  { id: 'b4', name: 'Френзи', desc: 'x5 к клику на 15 сек', icon: '💥', cost: 100000, duration: 15, type: 'clickMult', value: 5 },
+  { id: 'b5', name: 'Мега-буст', desc: 'x10 ко всему на 10 сек', icon: '🌈', cost: 1000000, duration: 10, type: 'allMult', value: 10 },
+];
+
+const ACHIEVEMENTS = [
+  { id: 'ach1', name: 'Первый клик', desc: 'Сделай 1 клик', icon: '🎯', check: s => s.totalClicks >= 1 },
+  { id: 'ach2', name: 'Кликер-новичок', desc: '100 кликов', icon: '👶', check: s => s.totalClicks >= 100 },
+  { id: 'ach3', name: 'Кликер-мастер', desc: '1 000 кликов', icon: '🎮', check: s => s.totalClicks >= 1000 },
+  { id: 'ach4', name: 'Кликер-легенда', desc: '10 000 кликов', icon: '🏆', check: s => s.totalClicks >= 10000 },
+  { id: 'ach5', name: 'Миллионер', desc: 'Заработай 1 000 R$', icon: '💵', check: s => s.totalRobux >= 1000 },
+  { id: 'ach6', name: 'Мультимиллионер', desc: 'Заработай 1 000 000 R$', icon: '💎', check: s => s.totalRobux >= 1000000 },
+  { id: 'ach7', name: 'Миллиардер', desc: 'Заработай 1 млрд R$', icon: '👑', check: s => s.totalRobux >= 1000000000 },
+  { id: 'ach8', name: 'Автоматизация', desc: 'Купи первый авто-кликер', icon: '🤖', check: s => (s.autoUpgrades.a1 || 0) >= 1 },
+  { id: 'ach9', name: 'Престиж', desc: 'Сделай первый престиж', icon: '✨', check: s => s.prestige >= 1 },
+  { id: 'ach10', name: 'Комбо-мастер', desc: 'Достигни комбо x3', icon: '🔥', check: s => s.maxCombo >= 3 },
+  { id: 'ach11', name: 'Лихорадка!', desc: 'Поймай золотую лихорадку', icon: '⚡', check: s => s.caughtFrenzy === true },
+  { id: 'ach12', name: 'Охотник', desc: 'Поймай 5 золотых логотипов', icon: '🎁', check: s => (s.goldenCaught || 0) >= 5 },
+  { id: 'ach13', name: 'Игрок', desc: 'Сделай первую ставку', icon: '🎰', check: s => (s.casinoWon + s.casinoLost) > 0 },
+  { id: 'ach14', name: 'Джекпот', desc: 'Выиграй 100 000 R$ за раз', icon: '💥', check: s => s.casinoBest >= 100000 },
+  { id: 'ach15', name: 'Открыватель', desc: 'Открой первый кейс', icon: '📦', check: s => s.totalCasesOpened >= 1 },
+  { id: 'ach16', name: 'Коллекционер', desc: 'Открой 50 кейсов', icon: '🎒', check: s => s.totalCasesOpened >= 50 },
+];
+
+// ==================================================
+// ============ КЕЙСЫ — ДАННЫЕ ============
+// ==================================================
+const RARITIES = {
+  common:    { name: 'Обычный',    color: '#9ca3af', weight: 55, sellMult: 1   },
+  uncommon:  { name: 'Необычный',  color: '#22c55e', weight: 25, sellMult: 3   },
+  rare:      { name: 'Редкий',     color: '#3b82f6', weight: 13, sellMult: 10  },
+  epic:      { name: 'Эпический',  color: '#a855f7', weight: 5,  sellMult: 40  },
+  legendary: { name: 'Легендарный',color: '#f59e0b', weight: 2,  sellMult: 200 },
+};
+
+// Все предметы
+const ALL_ITEMS = [
+  // Common
+  { id: 'c_hat1', name: 'Кепка',            icon: '🧢', rarity: 'common',    price: 50 },
+  { id: 'c_hat2', name: 'Очки',             icon: '🕶️', rarity: 'common',    price: 60 },
+  { id: 'c_hat3', name: 'Бинокль',          icon: '🔭', rarity: 'common',    price: 70 },
+  { id: 'c_hat4', name: 'Рюкзак',           icon: '🎒', rarity: 'common',    price: 80 },
+  { id: 'c_hat5', name: 'Фонарик',          icon: '🔦', rarity: 'common',    price: 90 },
+  // Uncommon
+  { id: 'u_hat1', name: 'Шлем рыцаря',      icon: '⛑️', rarity: 'uncommon',  price: 250 },
+  { id: 'u_hat2', name: 'Ковбойская шляпа', icon: '🤠', rarity: 'uncommon',  price: 300 },
+  { id: 'u_hat3', name: 'Корона принцессы', icon: '👸', rarity: 'uncommon',  price: 350 },
+  { id: 'u_hat4', name: 'Шапка Деда Мороза',icon: '🎅', rarity: 'uncommon',  price: 400 },
+  // Rare
+  { id: 'r_hat1', name: 'Шлем космонавта',  icon: '👨‍🚀', rarity: 'rare',      price: 1200 },
+  { id: 'r_hat2', name: 'Маска ниндзя',     icon: '🥷', rarity: 'rare',      price: 1500 },
+  { id: 'r_hat3', name: 'Шапка волшебника', icon: '🧙', rarity: 'rare',      price: 1800 },
+  { id: 'r_hat4', name: 'Шлем самурая',     icon: '⛩️', rarity: 'rare',      price: 2200 },
+  // Epic
+  { id: 'e_hat1', name: 'Крылья ангела',    icon: '👼', rarity: 'epic',      price: 8000 },
+  { id: 'e_hat2', name: 'Рога демона',      icon: '😈', rarity: 'epic',      price: 9500 },
+  { id: 'e_hat3', name: 'Корона дракона',   icon: '🐉', rarity: 'epic',      price: 11000 },
+  // Legendary
+  { id: 'l_hat1', name: 'Голова доминатора', icon: '👑', rarity: 'legendary', price: 50000 },
+  { id: 'l_hat2', name: 'Хало',             icon: '😇', rarity: 'legendary', price: 65000 },
+  { id: 'l_hat3', name: 'Крылья демона',    icon: '🦇', rarity: 'legendary', price: 80000 },
+  { id: 'l_hat4', name: 'Золотая голова',   icon: '🌟', rarity: 'legendary', price: 100000 },
+];
+
+// Кейсы
+const CASES = [
+  {
+    id: 'case_basic',
+    name: 'Обычный',
+    icon: '📦',
+    color: '#9ca3af',
+    cost: 500,
+    rarities: ['common', 'common', 'common', 'uncommon', 'uncommon', 'rare'],
+  },
+  {
+    id: 'case_rare',
+    name: 'Редкий',
+    icon: '🎁',
+    color: '#3b82f6',
+    cost: 5000,
+    rarities: ['common', 'uncommon', 'uncommon', 'rare', 'rare', 'epic'],
+  },
+  {
+    id: 'case_epic',
+    name: 'Эпический',
+    icon: '💎',
+    color: '#a855f7',
+    cost: 50000,
+    rarities: ['uncommon', 'rare', 'rare', 'epic', 'epic', 'legendary'],
+  },
+  {
+    id: 'case_legendary',
+    name: 'Легендарный',
+    icon: '👑',
+    color: '#f59e0b',
+    cost: 500000,
+    rarities: ['rare', 'epic', 'epic', 'legendary', 'legendary', 'legendary'],
+  },
+];
+
+// ==================================================
+// ============ УТИЛИТЫ ============
+// ==================================================
+function format(n) {
+  n = Math.floor(n);
+  if (n < 1000) return n.toString();
+  if (n < 1e6) return (n / 1e3).toFixed(2) + 'K';
+  if (n < 1e9) return (n / 1e6).toFixed(2) + 'M';
+  if (n < 1e12) return (n / 1e9).toFixed(2) + 'B';
+  if (n < 1e15) return (n / 1e12).toFixed(2) + 'T';
+  return (n / 1e15).toFixed(2) + 'Qa';
+}
+
+function getCost(upgrade, count) {
+  return Math.floor(upgrade.base * Math.pow(upgrade.mult, count));
+}
+
+function getClickUpgradeCount(id) { return state.clickUpgrades[id] || 0; }
+function getAutoUpgradeCount(id) { return state.autoUpgrades[id] || 0; }
+
+function getBasePerClick() {
+  let base = 1;
+  for (const u of CLICK_UPGRADES) base += u.effect * getClickUpgradeCount(u.id);
+  return base;
+}
+
+function getBasePerSec() {
+  let base = 0;
+  for (const u of AUTO_UPGRADES) base += u.effect * getAutoUpgradeCount(u.id);
+  return base;
+}
+
+function getActiveBoost(type) {
+  let total = 1;
+  for (const b of BOOSTS) {
+    const s = state.boosts[b.id];
+    if (s && s.until > Date.now() && (b.type === type || b.type === 'allMult')) {
+      total *= b.value;
+    }
+  }
+  return total;
+}
+
+function getFrenzyMult() {
+  return state.frenzyUntil > Date.now() ? 7 : 1;
+}
+
+function getComboMult() {
+  const c = state.combo || 0;
+  if (c >= 50) return 5;
+  if (c >= 30) return 4;
+  if (c >= 20) return 3;
+  if (c >= 10) return 2;
+  if (c >= 5) return 1.5;
+  return 1;
+}
+
+function getPerClick() {
+  return getBasePerClick() * state.multiplier * getActiveBoost('clickMult') * getFrenzyMult() * getComboMult();
+}
+
+function getPerSec() {
+  return getBasePerSec() * state.multiplier * getActiveBoost('autoMult');
+}
+
+function save() {
+  const data = { ...state };
+  delete data.combo;
+  delete data.comboTimer;
+  try { localStorage.setItem('robloxClickerPro', JSON.stringify(data)); } catch(e) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('robloxClickerPro');
+    if (raw) {
+      const d = JSON.parse(raw);
+      Object.keys(d).forEach(k => { if (d[k] !== undefined) state[k] = d[k]; });
+      if (!state.clickUpgrades) state.clickUpgrades = {};
+      if (!state.autoUpgrades) state.autoUpgrades = {};
+      if (!state.boosts) state.boosts = {};
+      if (!state.achievements) state.achievements = {};
+      if (!state.casinoBet) state.casinoBet = 100;
+      if (!state.inventory) state.inventory = [];
+      if (!state.inventoryIdCounter) state.inventoryIdCounter = 1;
+    }
+  } catch(e) {}
+}
+
+// ==================================================
+// ============ UI ============
+// ==================================================
+function updateUI() {
+  const pc = getPerClick();
+  const ps = getPerSec();
+
+  document.getElementById('robuxValue').textContent = format(state.robux);
+  document.getElementById('perSecond').textContent = '+' + format(ps) + ' / сек';
+
+  document.getElementById('statRobux').textContent = format(state.robux);
+  document.getElementById('statPerClick').textContent = format(pc);
+  document.getElementById('statPerSec').textContent = format(ps);
+  document.getElementById('statClicks').textContent = format(state.totalClicks);
+  document.getElementById('statMaxCombo').textContent = state.maxCombo || 0;
+  document.getElementById('statCases').textContent = format(state.totalCasesOpened || 0);
+
+  const net = (state.casinoWon || 0) - (state.casinoLost || 0);
+  const el = document.getElementById('statCasino');
+  el.textContent = (net >= 0 ? '+' : '') + format(net);
+  el.className = 'value ' + (net >= 0 ? 'green' : 'red');
+
+  document.getElementById('statPrestige').textContent = state.prestige;
+  document.getElementById('statMult').textContent = 'x' + state.multiplier.toFixed(1);
+
+  renderShop();
+  renderAchievements();
+
+  const prestigeBox = document.getElementById('prestigeBox');
+  if (state.totalRobux >= 1000000) {
+    prestigeBox.style.display = 'block';
+    document.getElementById('prestigeReward').textContent =
+      `x${state.prestige + 1} множитель, сброс прогресса`;
+  } else {
+    prestigeBox.style.display = 'none';
+  }
+}
+
+let currentTab = 'click';
+
+function renderShop() {
+  const content = document.getElementById('shopContent');
+  if (!content) return;
+  let list = [];
+  if (currentTab === 'click') list = CLICK_UPGRADES;
+  else if (currentTab === 'auto') list = AUTO_UPGRADES;
+  else list = BOOSTS;
+
+  let html = '';
+  if (currentTab === 'boost') {
+    for (const b of list) {
+      const active = state.boosts[b.id] && state.boosts[b.id].until > Date.now();
+      const canBuy = state.robux >= b.cost && !active;
+      const timeLeft = active ? Math.ceil((state.boosts[b.id].until - Date.now()) / 1000) : 0;
+      html += `
+        <div class="item ${!canBuy ? 'disabled' : ''}" data-boost="${b.id}">
+          <div class="item-icon">${b.icon}</div>
+          <div class="item-info">
+            <div class="item-name">${b.name}</div>
+            <div class="item-desc">${active ? '⏱ Активен: ' + timeLeft + 'с' : b.desc}</div>
+          </div>
+          <div class="item-price ${active ? 'owned' : ''}">${active ? '✓' : format(b.cost) + ' R$'}</div>
+        </div>`;
+    }
+  } else {
+    for (const u of list) {
+      const count = currentTab === 'click' ? getClickUpgradeCount(u.id) : getAutoUpgradeCount(u.id);
+      const cost = getCost(u, count);
+      const canBuy = state.robux >= cost;
+      html += `
+        <div class="item ${!canBuy ? 'disabled' : ''}" data-upg="${u.id}">
+          <div class="item-icon">${u.icon}</div>
+          <div class="item-info">
+            <div class="item-name">${u.name}${count > 0 ? ' <span class="count-badge">[' + count + ']</span>' : ''}</div>
+            <div class="item-desc">${u.desc}</div>
+          </div>
+          <div class="item-price">${format(cost)} R$</div>
+        </div>`;
+    }
+  }
+  content.innerHTML = html;
+
+  content.querySelectorAll('[data-upg]').forEach(el => {
+    el.addEventListener('click', () => buyUpgrade(el.dataset.upg));
+  });
+  content.querySelectorAll('[data-boost]').forEach(el => {
+    el.addEventListener('click', () => buyBoost(el.dataset.boost));
+  });
+}
+
+function renderAchievements() {
+  const container = document.getElementById('achievementsList');
+  if (!container) return;
+  let html = '';
+  for (const a of ACHIEVEMENTS) {
+    const unlocked = state.achievements[a.id];
+    html += `
+      <div class="achievement ${unlocked ? 'unlocked' : 'locked'}">
+        <div class="ach-icon">${a.icon}</div>
+        <div class="ach-info">
+          <div class="ach-name">${a.name}</div>
+          <div class="ach-desc">${a.desc}</div>
+        </div>
+        ${unlocked ? '<div class="ach-check">✓</div>' : '<div></div>'}
+      </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function buyUpgrade(id) {
+  const clickU = CLICK_UPGRADES.find(u => u.id === id);
+  const autoU = AUTO_UPGRADES.find(u => u.id === id);
+
+  if (clickU) {
+    const count = getClickUpgradeCount(id);
+    const cost = getCost(clickU, count);
+    if (state.robux < cost) return;
+    state.robux -= cost;
+    state.clickUpgrades[id] = count + 1;
+    playSound(660, 0.05);
+  } else if (autoU) {
+    const count = getAutoUpgradeCount(id);
+    const cost = getCost(autoU, count);
+    if (state.robux < cost) return;
+    state.robux -= cost;
+    state.autoUpgrades[id] = count + 1;
+    playSound(440, 0.08);
+  }
+  updateUI();
+  save();
+}
+
+function buyBoost(id) {
+  const b = BOOSTS.find(x => x.id === id);
+  if (!b) return;
+  if (state.boosts[id] && state.boosts[id].until > Date.now()) return;
+  if (state.robux < b.cost) return;
+  state.robux -= b.cost;
+  state.boosts[id] = { until: Date.now() + b.duration * 1000 };
+  notify(b.icon, b.name + ' активирован!');
+  playSound(880, 0.15);
+  updateUI();
+  save();
+}
+
+function updateCombo() {
+  const now = Date.now();
+  if (now - state.comboTimer < 1200) {
+    state.combo++;
+    if (state.combo > (state.maxCombo || 0)) state.maxCombo = state.combo;
+  } else {
+    state.combo = 1;
+  }
+  state.comboTimer = now;
+
+  const display = document.getElementById('comboDisplay');
+  const mult = getComboMult();
+  if (state.combo >= 5) {
+    display.textContent = `🔥 COMBO x${state.combo}  (${mult}x)`;
+    display.classList.add('show');
+  } else {
+    display.classList.remove('show');
+  }
+}
+
+const clicker = document.getElementById('clicker');
+
+clicker.addEventListener('click', (e) => {
+  updateCombo();
+  const gain = getPerClick();
+  state.robux += gain;
+  state.totalRobux += gain;
+  state.totalClicks++;
+
+  document.getElementById('robuxValue').classList.add('bump');
+  setTimeout(() => document.getElementById('robuxValue').classList.remove('bump'), 100);
+
+  const isCrit = Math.random() < 0.1;
+  const isFrenzy = state.frenzyUntil > Date.now();
+  const finalGain = isCrit ? gain * 10 : gain;
+  if (isCrit) {
+    state.robux += gain * 9;
+    state.totalRobux += gain * 9;
+  }
+  showFloat(e.clientX, e.clientY, '+' + format(finalGain), isCrit, isFrenzy);
+
+  playSound(isCrit ? 1200 : 800, 0.04);
+  for (let i = 0; i < 12; i++) spawnSpark(e.clientX, e.clientY, true);
+
+  checkAchievements();
+  updateUI();
+  save();
+});
+
+let autoTick = 0;
+setInterval(() => {
+  const ps = getPerSec();
+  if (ps > 0) {
+    state.robux += ps;
+    state.totalRobux += ps;
+    updateUI();
+  }
+  autoTick++;
+  if (autoTick % 5 === 0) save();
+}, 1000);
+
+setInterval(() => {
+  checkAchievements();
+  if (currentTab === 'boost') renderShop();
+}, 500);
+
+setInterval(() => {
+  let changed = false;
+  for (const id in state.boosts) {
+    if (state.boosts[id].until <= Date.now()) {
+      delete state.boosts[id];
+      changed = true;
+    }
+  }
+  if (changed) save();
+}, 1000);
+
+setInterval(() => {
+  if (state.combo && Date.now() - state.comboTimer > 1500) {
+    state.combo = 0;
+    document.getElementById('comboDisplay').classList.remove('show');
+  }
+}, 300);
+
+setInterval(() => {
+  const isFrenzy = state.frenzyUntil > Date.now();
+  if (isFrenzy) {
+    const left = Math.ceil((state.frenzyUntil - Date.now()) / 1000);
+    document.getElementById('frenzyTimer').textContent = left + 'с';
+  } else {
+    document.getElementById('frenzyBanner').classList.remove('show');
+    document.getElementById('robuxDisplay').classList.remove('frenzy');
+    document.getElementById('clickerWrap').classList.remove('frenzy');
+  }
+}, 200);
+
+setInterval(() => {
+  const today = new Date().toDateString();
+  const dailyAvailable = state.lastDailyDate !== today;
+  document.getElementById('dailyBadge').style.display = dailyAvailable ? 'flex' : 'none';
+
+  const hour = new Date().getHours();
+  if (hour >= 22 || hour < 6) document.body.classList.add('night');
+  else document.body.classList.remove('night');
+}, 1000);
+
+function triggerFrenzy() {
+  state.frenzyUntil = Date.now() + 10000;
+  state.caughtFrenzy = true;
+  document.getElementById('frenzyBanner').classList.add('show');
+  document.getElementById('robuxDisplay').classList.add('frenzy');
+  document.getElementById('clickerWrap').classList.add('frenzy');
+  notify('🔥', 'ЗОЛОТАЯ ЛИХОРАДКА! x7 на 10 секунд!');
+  playSound(1500, 0.5);
+  save();
+}
+
+function scheduleFrenzy() {
+  const delay = 60000 + Math.random() * 60000;
+  setTimeout(() => { triggerFrenzy(); scheduleFrenzy(); }, delay);
+}
+scheduleFrenzy();
+
+function spawnGoldenLogo() {
+  if (document.querySelector('.golden-logo')) return;
+
+  const el = document.createElement('div');
+  el.className = 'golden-logo';
+  el.innerHTML = `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="140" height="140" rx="14" ry="14"
+            fill="#ffd700" transform="rotate(-14 100 100)"/>
+      <rect x="75" y="75" width="50" height="50" rx="6" ry="6"
+            fill="#ff8c00" transform="rotate(-14 100 100)"/>
+    </svg>`;
+
+  const margin = 90;
+  const x = margin + Math.random() * Math.max(0, window.innerWidth - margin * 2);
+  const y = margin + Math.random() * Math.max(0, window.innerHeight - margin * 2);
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const bonus = Math.max(100, Math.floor(getPerSec() * 30 + getPerClick() * 50 + state.robux * 0.05));
+    state.robux += bonus;
+    state.totalRobux += bonus;
+    state.goldenCaught = (state.goldenCaught || 0) + 1;
+
+    showFloat(e.clientX, e.clientY, '+' + format(bonus), true);
+    notify('🎁', 'Золотой логотип! +' + format(bonus) + ' R$');
+    playSound(1600, 0.3);
+    for (let i = 0; i < 20; i++) spawnSpark(e.clientX, e.clientY, true);
+
+    el.remove();
+    checkAchievements();
+    updateUI();
+    save();
+  });
+
+  document.body.appendChild(el);
+
+  setTimeout(() => {
+    if (el.parentNode) {
+      el.style.transition = 'opacity 0.5s, transform 0.5s';
+      el.style.opacity = '0';
+      el.style.transform = 'scale(0)';
+      setTimeout(() => el.remove(), 500);
+    }
+  }, 8000);
+}
+
+function scheduleGolden() {
+  const delay = 45000 + Math.random() * 45000;
+  setTimeout(() => { spawnGoldenLogo(); scheduleGolden(); }, delay);
+}
+scheduleGolden();
+
+document.getElementById('dailyBtn').addEventListener('click', () => {
+  const today = new Date().toDateString();
+  if (state.lastDailyDate === today) {
+    notify('⏰', 'Бонус уже получен! Заходи завтра.');
+    return;
+  }
+
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastDailyDate === yesterday) state.dailyStreak++;
+  else state.dailyStreak = 1;
+
+  const baseReward = 1000 * Math.pow(2, state.dailyStreak - 1);
+  const reward = Math.min(baseReward, 10000000);
+
+  document.getElementById('dailyReward').textContent = '+' + format(reward) + ' R$';
+  document.getElementById('dailyStreak').textContent = state.dailyStreak;
+  document.getElementById('dailyModal').classList.add('show');
+
+  document.getElementById('dailyClaim').onclick = () => {
+    state.robux += reward;
+    state.totalRobux += reward;
+    state.lastDailyDate = today;
+
+    document.getElementById('dailyModal').classList.remove('show');
+    notify('🎁', 'Ежедневный бонус: +' + format(reward) + ' R$');
+    playSound(1400, 0.3);
+    updateUI();
+    save();
+  };
+});
+
+// ==================================================
+// ============ КАЗИНО ============
+// ==================================================
+const casinoModal = document.getElementById('casinoModal');
+const casinoContent = document.getElementById('casinoContent');
+let currentGame = 'slots';
+let rouletteBetType = 'red';
+let diceBetNumber = 7;
+
+function updateBetUI() {
+  document.getElementById('betDisplay').textContent = format(state.casinoBet);
+  document.getElementById('betInput').value = Math.floor(state.casinoBet);
+}
+
+document.getElementById('betInput').addEventListener('input', (e) => {
+  const val = parseInt(e.target.value) || 0;
+  state.casinoBet = Math.max(1, val);
+  document.getElementById('betDisplay').textContent = format(state.casinoBet);
+});
+
+document.querySelectorAll('.bet-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.bet;
+    const maxBet = Math.max(1, Math.floor(state.robux));
+    if (v === 'max') state.casinoBet = maxBet;
+    else if (v === 'half') state.casinoBet = Math.max(1, Math.floor(state.casinoBet / 2));
+    else if (v === 'double') state.casinoBet = Math.min(maxBet, state.casinoBet * 2);
+    else if (v === 'min') state.casinoBet = 10;
+    else state.casinoBet = parseInt(v);
+
+    state.casinoBet = Math.max(1, Math.min(state.casinoBet, maxBet || 1));
+    updateBetUI();
+    save();
+  });
+});
+
+document.getElementById('casinoBtn').addEventListener('click', () => {
+  casinoModal.classList.add('show');
+  const maxBet = Math.max(1, Math.floor(state.robux));
+  state.casinoBet = Math.max(1, Math.min(state.casinoBet, maxBet));
+  updateBetUI();
+  renderCasino();
+});
+
+document.getElementById('casinoClose').addEventListener('click', () => {
+  casinoModal.classList.remove('show');
+});
+
+document.querySelectorAll('.casino-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentGame = tab.dataset.game;
+    renderCasino();
+  });
+});
+
+function canBet(amount) {
+  if (state.robux < amount) { notify('💰', 'Недостаточно Robux!'); return false; }
+  if (amount < 1) { notify('⚠️', 'Ставка слишком мала!'); return false; }
+  return true;
+}
+
+function takeBet(amount) {
+  state.robux -= amount;
+  state.casinoLost += amount;
+  updateUI();
+  save();
+}
+
+function payWin(betAmount, multiplier) {
+  const win = Math.floor(betAmount * multiplier);
+  state.robux += win;
+  state.totalRobux += win;
+  state.casinoWon += win;
+  state.casinoLost -= betAmount;
+  if (state.casinoLost < 0) state.casinoLost = 0;
+  if (win > state.casinoBest) state.casinoBest = win;
+  updateUI();
+  save();
+  checkAchievements();
+  updateCasinoStats();
+  return win;
+}
+
+function finalizeLose(amount) {
+  updateCasinoStats();
+}
+
+function updateCasinoStats() {
+  const wonEl = document.getElementById('casinoWon');
+  const lostEl = document.getElementById('casinoLost');
+  const bestEl = document.getElementById('casinoBest');
+  if (wonEl) wonEl.textContent = format(state.casinoWon);
+  if (lostEl) lostEl.textContent = format(state.casinoLost);
+  if (bestEl) bestEl.textContent = format(state.casinoBest);
+}
+
+function renderCasino() {
+  updateCasinoStats();
+  if (currentGame === 'slots') renderSlots();
+  else if (currentGame === 'roulette') renderRoulette();
+  else if (currentGame === 'coin') renderCoin();
+  else if (currentGame === 'dice') renderDice();
+}
+
+// ============ СЛОТЫ ============
+const SLOT_SYMBOLS = [
+  { sym: '🍒', mult3: 5, weight: 25 },
+  { sym: '🍋', mult3: 8, weight: 22 },
+  { sym: '🍇', mult3: 12, weight: 18 },
+  { sym: '🔔', mult3: 20, weight: 14 },
+  { sym: '💎', mult3: 35, weight: 10 },
+  { sym: '⭐', mult3: 60, weight: 6 },
+  { sym: '7️⃣', mult3: 100, weight: 3 },
+  { sym: '👑', mult3: 250, weight: 2 },
+];
+
+function pickRandomSymbol() {
+  const total = SLOT_SYMBOLS.reduce((s, x) => s + x.weight, 0);
+  let r = Math.random() * total;
+  for (const s of SLOT_SYMBOLS) {
+    r -= s.weight;
+    if (r <= 0) return s;
+  }
+  return SLOT_SYMBOLS[0];
+}
+
+function renderSlots() {
+  const paytable = SLOT_SYMBOLS.slice().reverse().map(s => `
+    <div class="payline">
+      <span class="symbols">${s.sym}${s.sym}${s.sym}</span>
+      <span class="payout">x${s.mult3}</span>
+    </div>
+  `).join('');
+
+  casinoContent.innerHTML = `
+    <div class="slots-machine">
+      <div class="slots-title">💎 LUCKY ROBLOX SLOTS 💎</div>
+      <div class="slots-reels">
+        <div class="reel" id="reel0"><span class="reel-symbol">🍒</span></div>
+        <div class="reel" id="reel1"><span class="reel-symbol">🍋</span></div>
+        <div class="reel" id="reel2"><span class="reel-symbol">🍇</span></div>
+      </div>
+      <div class="slots-result" id="slotsResult">Нажми КРУТИТЬ!</div>
+      <div class="slots-paytable">${paytable}</div>
+      <button class="spin-btn" id="spinBtn">🎰 КРУТИТЬ (${format(state.casinoBet)} R$)</button>
+    </div>
+  `;
+
+  document.getElementById('spinBtn').addEventListener('click', spinSlots);
+}
+
+let slotsSpinning = false;
+
+function spinSlots() {
+  if (slotsSpinning) return;
+  const bet = state.casinoBet;
+  if (!canBet(bet)) return;
+
+  slotsSpinning = true;
+  takeBet(bet);
+
+  const resultEl = document.getElementById('slotsResult');
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = 'КРУТИМ...';
+  resultEl.textContent = '';
+  resultEl.className = 'slots-result';
+
+  const reels = [
+    document.getElementById('reel0'),
+    document.getElementById('reel1'),
+    document.getElementById('reel2'),
+  ];
+
+  const finals = [pickRandomSymbol(), pickRandomSymbol(), pickRandomSymbol()];
+
+  reels.forEach((reel, i) => {
+    reel.classList.add('spinning');
+    reel.classList.remove('win');
+    const spinTime = 800 + i * 500;
+    const interval = setInterval(() => {
+      const randSym = pickRandomSymbol();
+      reel.querySelector('.reel-symbol').textContent = randSym.sym;
+    }, 60);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      reel.classList.remove('spinning');
+      reel.querySelector('.reel-symbol').textContent = finals[i].sym;
+    }, spinTime);
+  });
+
+  setTimeout(() => {
+    const [a, b, c] = finals;
+    let winAmount = 0, message = '', isWin = false;
+
+    if (a.sym === b.sym && b.sym === c.sym) {
+      winAmount = Math.floor(bet * a.mult3);
+      message = `${a.sym}${a.sym}${a.sym}  +${format(winAmount)} R$!`;
+      isWin = true;
+      reels.forEach(r => r.classList.add('win'));
+      playSound(1500, 0.4);
+      for (let k = 0; k < 40; k++) {
+        setTimeout(() => spawnSpark(
+          window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+          window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+          true
+        ), k * 20);
+      }
+    } else if (a.sym === b.sym || b.sym === c.sym || a.sym === c.sym) {
+      const pair = (a.sym === b.sym) ? a : (b.sym === c.sym) ? b : a;
+      winAmount = Math.floor(bet * 1.5);
+      message = `Пара ${pair.sym}${pair.sym}  +${format(winAmount)} R$`;
+      isWin = true;
+      playSound(1000, 0.2);
+    } else {
+      message = `Увы, не повезло 😢  -${format(bet)} R$`;
+      isWin = false;
+      playSound(300, 0.2);
+    }
+
+    if (isWin) payWin(bet, winAmount / bet);
+    else finalizeLose(bet);
+
+    resultEl.textContent = message;
+    resultEl.className = 'slots-result ' + (isWin ? 'win' : 'lose');
+
+    btn.disabled = false;
+    btn.textContent = `🎰 КРУТИТЬ (${format(state.casinoBet)} R$)`;
+    slotsSpinning = false;
+    updateUI();
+    save();
+  }, 2500);
+}
+
+// ============ РУЛЕТКА ============
+const ROULETTE_NUMBERS = [
+  0, 32, 15, 19, 4, 21, 2, 25,
+  17, 34, 6, 27, 13, 36, 11, 30,
+  8, 23, 10, 5, 24, 16, 33, 1,
+  20, 14, 31, 9, 22, 18, 29, 7,
+  28, 12, 35, 3, 26
+];
+
+const RED_NUMS = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+
+function renderRoulette() {
+  const total = ROULETTE_NUMBERS.length;
+  const segAngle = 360 / total;
+
+  const gradients = [];
+  ROULETTE_NUMBERS.forEach((num, i) => {
+    const start = i * segAngle;
+    const end = (i + 1) * segAngle;
+    let color;
+    if (num === 0) color = '#16a34a';
+    else if (RED_NUMS.includes(num)) color = '#dc2626';
+    else color = '#0a0a0a';
+    gradients.push(`${color} ${start}deg ${end}deg`);
+  });
+
+  const conicStyle = `conic-gradient(from ${-segAngle / 2}deg, ${gradients.join(', ')})`;
+
+  const numberRadius = 118;
+  const labels = [];
+  ROULETTE_NUMBERS.forEach((num, i) => {
+    const angleDeg = i * segAngle;
+    const angleRad = (angleDeg - 90) * Math.PI / 180;
+    const x = Math.cos(angleRad) * numberRadius;
+    const y = Math.sin(angleRad) * numberRadius;
+    labels.push(
+      `<div class="roulette-label" style="transform: translate(${x}px, ${y}px);">${num}</div>`
+    );
+  });
+
+  casinoContent.innerHTML = `
+    <div style="font-size:15px; font-weight:900; letter-spacing:2px; margin-bottom:6px;">🎡 РУЛЕТКА</div>
+    <p style="font-size:11px; color:#8bb8e8; margin-bottom:0;">Классическая европейская — 37 чисел</p>
+
+    <div class="roulette-stage">
+      <div class="roulette-pointer"></div>
+      <div class="roulette-outer">
+        <div class="roulette-wheel" id="rouletteWheel" style="background: ${conicStyle};">
+          ${labels.join('')}
+        </div>
+      </div>
+      <div class="roulette-hub">
+        <div class="roulette-hub-inner"></div>
+      </div>
+    </div>
+
+    <div style="font-size:12px; color:#8bb8e8; margin-top:4px; margin-bottom:8px;">Выбери ставку:</div>
+    <div class="roulette-bet-row">
+      <button class="roulette-bet red" data-bet="red">🔴 Красное (x2)</button>
+      <button class="roulette-bet black" data-bet="black">⚫ Чёрное (x2)</button>
+      <button class="roulette-bet green" data-bet="green">🟢 Зеро (x36)</button>
+      <button class="roulette-bet even" data-bet="even">Чёт (x2)</button>
+      <button class="roulette-bet odd" data-bet="odd">Нечет (x2)</button>
+    </div>
+
+    <div class="roulette-result" id="rouletteResult">Выбери ставку и крути!</div>
+    <button class="spin-btn" id="rouletteSpin">🎡 КРУТИТЬ (${format(state.casinoBet)} R$)</button>
+  `;
+
+  document.querySelectorAll('.roulette-bet').forEach(btn => {
+    if (btn.dataset.bet === rouletteBetType) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.roulette-bet').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      rouletteBetType = btn.dataset.bet;
+    });
+  });
+
+  document.getElementById('rouletteSpin').addEventListener('click', spinRoulette);
+}
+
+let rouletteSpinning = false;
+let currentRotation = 0;
+
+function spinRoulette() {
+  if (rouletteSpinning) return;
+  const bet = state.casinoBet;
+  if (!canBet(bet)) return;
+
+  rouletteSpinning = true;
+  takeBet(bet);
+
+  const wheel = document.getElementById('rouletteWheel');
+  const resultEl = document.getElementById('rouletteResult');
+  const btn = document.getElementById('rouletteSpin');
+  btn.disabled = true;
+  btn.textContent = 'КРУТИМ...';
+  resultEl.textContent = '';
+  resultEl.className = 'roulette-result';
+
+  const winIndex = Math.floor(Math.random() * ROULETTE_NUMBERS.length);
+  const winningNum = ROULETTE_NUMBERS[winIndex];
+
+  const segAngle = 360 / ROULETTE_NUMBERS.length;
+  const targetAngleInWheel = winIndex * segAngle + segAngle / 2;
+
+  const fullSpins = 5 + Math.floor(Math.random() * 3);
+  const targetRotation = currentRotation + fullSpins * 360 + (360 - targetAngleInWheel);
+
+  currentRotation = targetRotation;
+  wheel.style.transform = `rotate(${targetRotation}deg)`;
+
+  setTimeout(() => {
+    const isRed = RED_NUMS.includes(winningNum);
+    const isBlack = winningNum !== 0 && !isRed;
+    const isGreen = winningNum === 0;
+    const isEven = winningNum !== 0 && winningNum % 2 === 0;
+    const isOdd = winningNum !== 0 && winningNum % 2 === 1;
+
+    let winAmount = 0, isWin = false;
+    if (rouletteBetType === 'red' && isRed) { winAmount = bet * 2; isWin = true; }
+    else if (rouletteBetType === 'black' && isBlack) { winAmount = bet * 2; isWin = true; }
+    else if (rouletteBetType === 'green' && isGreen) { winAmount = bet * 36; isWin = true; }
+    else if (rouletteBetType === 'even' && isEven) { winAmount = bet * 2; isWin = true; }
+    else if (rouletteBetType === 'odd' && isOdd) { winAmount = bet * 2; isWin = true; }
+
+    const colorEmoji = isGreen ? '🟢' : isRed ? '🔴' : '⚫';
+    let message = `${colorEmoji} Выпало: ${winningNum}`;
+
+    if (isWin) {
+      payWin(bet, winAmount / bet);
+      message += `  +${format(winAmount)} R$!`;
+      resultEl.className = 'roulette-result win';
+      playSound(1500, 0.4);
+      for (let k = 0; k < 30; k++) {
+        setTimeout(() => spawnSpark(
+          window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+          window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+          true
+        ), k * 25);
+      }
+    } else {
+      finalizeLose(bet);
+      message += `  -${format(bet)} R$`;
+      resultEl.className = 'roulette-result lose';
+      playSound(300, 0.2);
+    }
+
+    resultEl.textContent = message;
+    btn.disabled = false;
+    btn.textContent = `🎡 КРУТИТЬ (${format(state.casinoBet)} R$)`;
+    rouletteSpinning = false;
+    updateUI();
+    save();
+  }, 5100);
+}
+
+// ============ МОНЕТКА ============
+function renderCoin() {
+  casinoContent.innerHTML = `
+    <div style="font-size:15px; font-weight:900; letter-spacing:2px;">🪙 МОНЕТКА</div>
+    <p style="font-size:12px; color:#8bb8e8;">Угадай — выпадет орёл или решка? Выигрыш x2</p>
+
+    <div class="coin-scene">
+      <div class="coin" id="coin">
+        <div class="coin-face heads">👑</div>
+        <div class="coin-face tails">💎</div>
+      </div>
+    </div>
+
+    <div class="roulette-bet-row">
+      <button class="roulette-bet" data-coin="heads" style="border-color:#ffd700;">👑 ОРЁЛ</button>
+      <button class="roulette-bet" data-coin="tails" style="border-color:#4facfe;">💎 РЕШКА</button>
+    </div>
+
+    <div class="coin-result" id="coinResult">Выбери сторону и брось!</div>
+    <button class="spin-btn" id="coinFlip">🪙 БРОСИТЬ (${format(state.casinoBet)} R$)</button>
+  `;
+
+  let coinChoice = 'heads';
+  document.querySelectorAll('[data-coin]').forEach(btn => {
+    if (btn.dataset.coin === coinChoice) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-coin]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      coinChoice = btn.dataset.coin;
+    });
+  });
+
+  let flipping = false;
+  document.getElementById('coinFlip').addEventListener('click', () => {
+    if (flipping) return;
+    const bet = state.casinoBet;
+    if (!canBet(bet)) return;
+
+    flipping = true;
+    takeBet(bet);
+
+    const coin = document.getElementById('coin');
+    const resultEl = document.getElementById('coinResult');
+    const btn = document.getElementById('coinFlip');
+    btn.disabled = true;
+    btn.textContent = 'БРОСАЕМ...';
+    resultEl.textContent = '';
+    resultEl.className = 'coin-result';
+
+    const isHeads = Math.random() < 0.5;
+    const rotations = 360 * 5 + (isHeads ? 0 : 180);
+    coin.style.transform = `rotateY(${rotations}deg)`;
+
+    setTimeout(() => {
+      let isWin = coinChoice === (isHeads ? 'heads' : 'tails');
+      const resultEmoji = isHeads ? '👑 ОРЁЛ' : '💎 РЕШКА';
+
+      if (isWin) {
+        const winAmount = bet * 2;
+        payWin(bet, 2);
+        resultEl.textContent = `${resultEmoji}  +${format(winAmount)} R$!`;
+        resultEl.className = 'coin-result win';
+        playSound(1500, 0.4);
+        for (let k = 0; k < 25; k++) {
+          setTimeout(() => spawnSpark(
+            window.innerWidth / 2 + (Math.random() - 0.5) * 250,
+            window.innerHeight / 2 + (Math.random() - 0.5) * 150,
+            true
+          ), k * 30);
+        }
+      } else {
+        finalizeLose(bet);
+        resultEl.textContent = `${resultEmoji}  -${format(bet)} R$`;
+        resultEl.className = 'coin-result lose';
+        playSound(300, 0.2);
+      }
+
+      btn.disabled = false;
+      btn.textContent = `🪙 БРОСИТЬ (${format(state.casinoBet)} R$)`;
+      flipping = false;
+      updateUI();
+      save();
+    }, 2100);
+  });
+}
+
+// ============ КОСТИ ============
+const DICE_MULT = { 2: 36, 3: 18, 4: 12, 5: 9, 6: 7, 7: 6, 8: 7, 9: 9, 10: 12, 11: 18, 12: 36 };
+
+function renderDice() {
+  casinoContent.innerHTML = `
+    <div style="font-size:15px; font-weight:900; letter-spacing:2px;">🎲 КОСТИ</div>
+    <p style="font-size:12px; color:#8bb8e8;">Угадай сумму двух костей (от 2 до 12). Выплаты зависят от вероятности!</p>
+
+    <div class="dice-scene">
+      <div class="die" id="die1"><div class="die-face" id="face1"></div></div>
+      <div class="die" id="die2"><div class="die-face" id="face2"></div></div>
+    </div>
+
+    <div style="font-size:12px; color:#8bb8e8; margin-bottom:8px;">Выбери сумму:</div>
+    <div class="dice-bet-row" id="diceBetRow"></div>
+
+    <div class="dice-result" id="diceResult">Выбери сумму и брось!</div>
+    <button class="spin-btn" id="diceRoll">🎲 БРОСИТЬ (${format(state.casinoBet)} R$)</button>
+  `;
+
+  const row = document.getElementById('diceBetRow');
+  for (let n = 2; n <= 12; n++) {
+    const btn = document.createElement('button');
+    btn.className = 'dice-bet';
+    btn.dataset.num = n;
+    btn.innerHTML = `${n}<br><span style="font-size:9px; color:#ffd700;">x${DICE_MULT[n]}</span>`;
+    if (n === diceBetNumber) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dice-bet').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      diceBetNumber = n;
+    });
+    row.appendChild(btn);
+  }
+
+  renderDieFace('face1', 1);
+  renderDieFace('face2', 1);
+
+  let rolling = false;
+  document.getElementById('diceRoll').addEventListener('click', () => {
+    if (rolling) return;
+    const bet = state.casinoBet;
+    if (!canBet(bet)) return;
+
+    rolling = true;
+    takeBet(bet);
+
+    const die1 = document.getElementById('die1');
+    const die2 = document.getElementById('die2');
+    const resultEl = document.getElementById('diceResult');
+    const btn = document.getElementById('diceRoll');
+    btn.disabled = true;
+    btn.textContent = 'БРОСАЕМ...';
+    resultEl.textContent = '';
+    resultEl.className = 'dice-result';
+
+    die1.classList.add('rolling');
+    die2.classList.add('rolling');
+
+    const interval = setInterval(() => {
+      renderDieFace('face1', Math.floor(Math.random() * 6) + 1);
+      renderDieFace('face2', Math.floor(Math.random() * 6) + 1);
+    }, 80);
+
+    const final1 = Math.floor(Math.random() * 6) + 1;
+    const final2 = Math.floor(Math.random() * 6) + 1;
+
+    setTimeout(() => {
+      clearInterval(interval);
+      die1.classList.remove('rolling');
+      die2.classList.remove('rolling');
+      renderDieFace('face1', final1);
+      renderDieFace('face2', final2);
+
+      const sum = final1 + final2;
+      const isWin = sum === diceBetNumber;
+
+      if (isWin) {
+        const winAmount = bet * DICE_MULT[sum];
+        payWin(bet, DICE_MULT[sum]);
+        resultEl.textContent = `🎲 ${final1} + ${final2} = ${sum}  +${format(winAmount)} R$! 🎉`;
+        resultEl.className = 'dice-result win';
+        playSound(1500, 0.4);
+        for (let k = 0; k < 30; k++) {
+          setTimeout(() => spawnSpark(
+            window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+            window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+            true
+          ), k * 25);
+        }
+      } else {
+        finalizeLose(bet);
+        resultEl.textContent = `🎲 ${final1} + ${final2} = ${sum}  -${format(bet)} R$`;
+        resultEl.className = 'dice-result lose';
+        playSound(300, 0.2);
+      }
+
+      btn.disabled = false;
+      btn.textContent = `🎲 БРОСИТЬ (${format(state.casinoBet)} R$)`;
+      rolling = false;
+      updateUI();
+      save();
+    }, 1300);
+  });
+}
+
+function renderDieFace(faceId, num) {
+  const face = document.getElementById(faceId);
+  if (!face) return;
+  const patterns = {
+    1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8],
+  };
+  const active = patterns[num] || [];
+  face.innerHTML = '';
+  for (let i = 0; i < 9; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'pip' + (active.includes(i) ? ' active' : '');
+    face.appendChild(pip);
+  }
+}
+
+// ==================================================
+// ============ КЕЙСЫ ============
+// ==================================================
+const casesModal = document.getElementById('casesModal');
+const casesList = document.getElementById('casesList');
+const caseStrip = document.getElementById('caseStrip');
+const caseResult = document.getElementById('caseResult');
+const caseOpenBtn = document.getElementById('caseOpenBtn');
+const caseOpeningTitle = document.getElementById('caseOpeningTitle');
+
+let selectedCase = null;
+let caseOpening = false;
+
+// Получить все предметы доступные в кейсе
+function getCaseItems(caseData) {
+  const items = [];
+  for (const rarity of caseData.rarities) {
+    const pool = ALL_ITEMS.filter(i => i.rarity === rarity);
+    for (const item of pool) {
+      items.push({ ...item, weight: RARITIES[rarity].weight });
+    }
+  }
+  return items;
+}
+
+// Случайный предмет из кейса
+function pickCaseItem(caseData) {
+  const items = getCaseItems(caseData);
+  const total = items.reduce((s, i) => s + i.weight, 0);
+  let r = Math.random() * total;
+  for (const item of items) {
+    r -= item.weight;
+    if (r <= 0) return item;
+  }
+  return items[0];
+}
+
+// Открыть казино кейсов
+document.getElementById('casesBtn').addEventListener('click', () => {
+  casesModal.classList.add('show');
+  renderCasesList();
+  renderInventory();
+});
+
+document.getElementById('casesClose').addEventListener('click', () => {
+  casesModal.classList.remove('show');
+});
+
+// Отрисовка списка кейсов
+function renderCasesList() {
+  casesList.innerHTML = '';
+  for (const c of CASES) {
+    const el = document.createElement('div');
+    el.className = 'case-card';
+    el.style.setProperty('--case-color', c.color);
+    if (selectedCase && selectedCase.id === c.id) el.classList.add('active');
+    el.innerHTML = `
+      <div class="case-emoji">${c.icon}</div>
+      <div class="case-name">${c.name}</div>
+      <div class="case-price">${format(c.cost)} R$</div>
+    `;
+    el.addEventListener('click', () => {
+      if (caseOpening) return;
+      selectedCase = c;
+      renderCasesList();
+      caseOpeningTitle.textContent = `Кейс: ${c.name}`;
+      caseOpenBtn.disabled = false;
+      caseOpenBtn.textContent = `🎁 ОТКРЫТЬ (${format(c.cost)} R$)`;
+      caseResult.textContent = '';
+      // Заполняем ленту рандомными предметами
+      fillCaseStrip(c);
+    });
+    casesList.appendChild(el);
+  }
+}
+
+// Заполнить ленту для превью
+function fillCaseStrip(c) {
+  const items = getCaseItems(c);
+  caseStrip.innerHTML = '';
+  for (let i = 0; i < 50; i++) {
+    const item = items[Math.floor(Math.random() * items.length)];
+    const rarity = RARITIES[item.rarity];
+    const slot = document.createElement('div');
+    slot.className = 'case-slot';
+    slot.style.setProperty('--slot-color', rarity.color);
+    slot.innerHTML = `
+      <div class="case-slot-rarity">${rarity.name[0]}</div>
+      <div class="case-slot-emoji">${item.icon}</div>
+      <div class="case-slot-name">${item.name}</div>
+    `;
+    caseStrip.appendChild(slot);
+  }
+  caseStrip.style.transition = 'none';
+  caseStrip.style.transform = 'translateY(-50%) translateX(0)';
+}
+
+// Открытие кейса
+caseOpenBtn.addEventListener('click', () => {
+  if (caseOpening || !selectedCase) return;
+
+  const cost = selectedCase.cost;
+  if (state.robux < cost) {
+    notify('💰', 'Недостаточно Robux!');
+    return;
+  }
+
+  state.robux -= cost;
+  state.totalCasesOpened = (state.totalCasesOpened || 0) + 1;
+
+  caseOpening = true;
+  caseOpenBtn.disabled = true;
+  caseResult.textContent = '';
+  caseResult.innerHTML = '';
+
+  // Определяем выигрышный предмет
+  const winItem = pickCaseItem(selectedCase);
+  const winRarity = RARITIES[winItem.rarity];
+
+  // Строим ленту из 60 слотов, победный — на позиции 55
+  const slots = [];
+  const items = getCaseItems(selectedCase);
+  const WIN_INDEX = 55;
+
+  for (let i = 0; i < 60; i++) {
+    if (i === WIN_INDEX) {
+      slots.push(winItem);
+    } else {
+      slots.push(items[Math.floor(Math.random() * items.length)]);
+    }
+  }
+
+  // Отрисовка
+  caseStrip.style.transition = 'none';
+  caseStrip.style.transform = 'translateY(-50%) translateX(0)';
+
+  caseStrip.innerHTML = '';
+  slots.forEach(item => {
+    const rarity = RARITIES[item.rarity];
+    const slot = document.createElement('div');
+    slot.className = 'case-slot';
+    slot.style.setProperty('--slot-color', rarity.color);
+    slot.innerHTML = `
+      <div class="case-slot-rarity">${rarity.name[0]}</div>
+      <div class="case-slot-emoji">${item.icon}</div>
+      <div class="case-slot-name">${item.name}</div>
+    `;
+    caseStrip.appendChild(slot);
+  });
+
+  // Размеры слота: 110px ширина + 8px gap = 118px
+  const SLOT_W = 118;
+  const containerW = document.querySelector('.case-roulette').offsetWidth;
+  // Слот должен оказаться в центре: смещаем влево на (WIN_INDEX * SLOT_W + SLOT_W/2 - containerW/2)
+  const offset = WIN_INDEX * SLOT_W + SLOT_W / 2 - containerW / 2;
+
+  // Небольшой рандомный сдвиг для "естественности" — до ±30px
+  const jitter = (Math.random() - 0.5) * 40;
+  const finalOffset = offset + jitter;
+
+  // Запуск анимации
+  requestAnimationFrame(() => {
+    caseStrip.style.transition = 'transform 5s cubic-bezier(0.15, 0.85, 0.15, 1)';
+    caseStrip.style.transform = `translateY(-50%) translateX(-${finalOffset}px)`;
+  });
+
+  // Победные искры через 5 сек
+  setTimeout(() => {
+    // Добавляем предмет в инвентарь
+    const invItem = {
+      uid: state.inventoryIdCounter++,
+      itemId: winItem.id,
+      name: winItem.name,
+      icon: winItem.icon,
+      rarity: winItem.rarity,
+      price: winItem.price,
+    };
+    state.inventory.push(invItem);
+
+    // Отображаем результат
+    caseResult.innerHTML = `
+      <span style="color: ${winRarity.color}; text-shadow: 0 0 20px ${winRarity.color};">
+        ${winRarity.name.toUpperCase()}!
+      </span>
+      <span class="prize-name" style="color: ${winRarity.color};">
+        ${winItem.icon} ${winItem.name}
+      </span>
+    `;
+
+    // Звук и искры по редкости
+    if (winItem.rarity === 'legendary') {
+      playSound(2000, 0.6);
+      notify('👑', `ЛЕГЕНДАРКА! ${winItem.name}!`);
+      for (let k = 0; k < 80; k++) {
+        setTimeout(() => spawnSpark(
+          window.innerWidth / 2 + (Math.random() - 0.5) * 500,
+          window.innerHeight / 2 + (Math.random() - 0.5) * 300,
+          true
+        ), k * 15);
+      }
+    } else if (winItem.rarity === 'epic') {
+      playSound(1600, 0.4);
+      notify('💜', `Эпический предмет: ${winItem.name}`);
+      for (let k = 0; k < 40; k++) {
+        setTimeout(() => spawnSpark(
+          window.innerWidth / 2 + (Math.random() - 0.5) * 400,
+          window.innerHeight / 2 + (Math.random() - 0.5) * 250,
+          true
+        ), k * 20);
+      }
+    } else if (winItem.rarity === 'rare') {
+      playSound(1300, 0.3);
+      for (let k = 0; k < 20; k++) {
+        setTimeout(() => spawnSpark(
+          window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+          window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+          true
+        ), k * 25);
+      }
+    } else {
+      playSound(800, 0.15);
+    }
+
+    caseOpening = false;
+    caseOpenBtn.disabled = false;
+    caseOpenBtn.textContent = `🎁 ОТКРЫТЬ (${format(selectedCase.cost)} R$)`;
+
+    renderInventory();
+    checkAchievements();
+    updateUI();
+    save();
+  }, 5200);
+});
+
+// Инвентарь
+function renderInventory() {
+  const grid = document.getElementById('inventoryGrid');
+  const countEl = document.getElementById('inventoryCount');
+  countEl.textContent = `${state.inventory.length} предметов`;
+
+  if (state.inventory.length === 0) {
+    grid.innerHTML = '<div class="inventory-empty" style="grid-column: 1/-1;">Пока пусто. Открой первый кейс!</div>';
+    return;
+  }
+
+  // Сортируем: легендарные сверху
+  const order = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+  const sorted = [...state.inventory].sort((a, b) => order.indexOf(a.rarity) - order.indexOf(b.rarity));
+
+  grid.innerHTML = '';
+  for (const inv of sorted) {
+    const rarity = RARITIES[inv.rarity];
+    const el = document.createElement('div');
+    el.className = 'inv-item';
+    el.style.setProperty('--inv-color', rarity.color);
+    el.title = `Кликни чтобы продать за ${format(inv.price)} R$`;
+    el.innerHTML = `
+      <span class="inv-item-emoji">${inv.icon}</span>
+      <div class="inv-item-name">${inv.name}</div>
+      <div class="inv-item-price">${format(inv.price)} R$</div>
+      <div class="inv-item-sell">Продать</div>
+    `;
+    el.addEventListener('click', () => sellInventoryItem(inv.uid));
+    grid.appendChild(el);
+  }
+}
+
+function sellInventoryItem(uid) {
+  const idx = state.inventory.findIndex(i => i.uid === uid);
+  if (idx === -1) return;
+  const item = state.inventory[idx];
+  const sellPrice = Math.floor(item.price * 0.7); // 70% от цены
+  if (!confirm(`Продать "${item.name}" за ${format(sellPrice)} R$?`)) return;
+
+  state.robux += sellPrice;
+  state.totalRobux += sellPrice;
+  state.inventory.splice(idx, 1);
+
+  notify('💰', `Продано: ${item.name} +${format(sellPrice)} R$`);
+  playSound(700, 0.15);
+  renderInventory();
+  updateUI();
+  save();
+}
+
+// ==================================================
+// ============ ОБЩИЕ ============
+// ==================================================
+function checkAchievements() {
+  for (const a of ACHIEVEMENTS) {
+    if (!state.achievements[a.id] && a.check(state)) {
+      state.achievements[a.id] = true;
+      notify('🏆', 'Достижение: ' + a.name);
+      playSound(1500, 0.2);
+    }
+  }
+}
+
+document.getElementById('prestigeBtn').addEventListener('click', () => {
+  if (state.totalRobux < 1000000) return;
+  if (!confirm('Престиж сбросит весь прогресс, но даст +1 к множителю. Продолжить?')) return;
+
+  state.prestige += 1;
+  state.multiplier = 1 + state.prestige;
+  state.robux = 0;
+  state.clickUpgrades = {};
+  state.autoUpgrades = {};
+  state.boosts = {};
+
+  notify('✨', 'Престиж ' + state.prestige + '! Множитель x' + state.multiplier);
+  playSound(1000, 0.3);
+  updateUI();
+  save();
+});
+
+function notify(emoji, text) {
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.innerHTML = `<span class="emoji">${emoji}</span><span>${text}</span>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 500);
+  }, 2500);
+}
+
+function showFloat(x, y, text, gold, frenzy) {
+  const el = document.createElement('div');
+  el.className = 'floating' + (gold ? ' gold' : '') + (frenzy ? ' frenzy' : '');
+  el.textContent = text;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+let audioCtx = null;
+function playSound(freq, duration) {
+  if (!state.sound) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tab.dataset.tab;
+    renderShop();
+  });
+});
+
+document.getElementById('soundBtn').addEventListener('click', (e) => {
+  state.sound = !state.sound;
+  e.target.textContent = state.sound ? '🔊' : '🔇';
+  save();
+});
+
+(function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 1;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    container.appendChild(s);
+  }
+})();
+
+const cursorDot = document.getElementById('cursorDot');
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+let lastX = mouseX, lastY = mouseY, lastSparkTime = 0, isTouch = false;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  const now = performance.now();
+  const dist = Math.hypot(mouseX - lastX, mouseY - lastY);
+  if (dist > 3 && now - lastSparkTime > 25) {
+    const count = Math.min(3, Math.floor(dist / 8) + 1);
+    for (let i = 0; i < count; i++) spawnSpark(mouseX, mouseY, false);
+    lastSparkTime = now;
+  }
+  lastX = mouseX; lastY = mouseY;
+});
+
+window.addEventListener('touchstart', () => { isTouch = true; }, { once: true });
+
+function animateCursor() {
+  if (!isTouch) {
+    cursorDot.style.left = mouseX + 'px';
+    cursorDot.style.top = mouseY + 'px';
+  }
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+function spawnSpark(x, y, burst) {
+  const spark = document.createElement('div');
+  spark.className = 'spark';
+  const size = burst ? 3 + Math.random() * 5 : 2 + Math.random() * 4;
+  spark.style.width = size + 'px';
+  spark.style.height = size + 'px';
+  const offsetX = (Math.random() - 0.5) * (burst ? 30 : 14);
+  const offsetY = (Math.random() - 0.5) * (burst ? 30 : 14);
+  spark.style.left = (x + offsetX) + 'px';
+  spark.style.top = (y + offsetY) + 'px';
+  const angle = Math.random() * Math.PI * 2;
+  const distance = burst ? 30 + Math.random() * 60 : 15 + Math.random() * 35;
+  spark.style.setProperty('--dx', (Math.cos(angle) * distance).toFixed(1));
+  spark.style.setProperty('--dy', (Math.sin(angle) * distance).toFixed(1));
+  const dur = burst ? 0.6 + Math.random() * 0.5 : 0.7 + Math.random() * 0.6;
+  spark.style.animationDuration = dur + 's';
+  document.body.appendChild(spark);
+  setTimeout(() => spark.remove(), dur * 1000 + 100);
+}
+
+// ==================================================
+// ============ СТАРТ ============
+// ==================================================
+load();
+updateUI();
+document.getElementById('soundBtn').textContent = state.sound ? '🔊' : '🔇';
+
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !e.repeat && !casinoModal.classList.contains('show') && !casesModal.classList.contains('show')) {
+    e.preventDefault();
+    clicker.click();
+  }
+});
+</script>
+
+</body>
+</html>
